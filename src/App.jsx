@@ -7,6 +7,8 @@ import Issues from "./pages/Issues.jsx";
 import CreateIssue from "./pages/CreateIssue.jsx";
 import Notifications from "./pages/Notifications.jsx";
 import Profile from "./pages/Profile.jsx";
+import Labs from "./pages/Labs.jsx";
+import Computers from "./pages/Computers.jsx";
 
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
@@ -15,13 +17,19 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Public Routes */}
+        {/* PUBLIC */}
 
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/register"
+          element={<Register />}
+        />
 
-        {/* Protected Routes */}
+        {/* PROTECTED */}
 
         <Route
           path="/"
@@ -37,6 +45,24 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/labs"
+          element={
+            <ProtectedRoute>
+              <Labs />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/computers"
+          element={
+            <ProtectedRoute>
+              <Computers />
             </ProtectedRoute>
           }
         />
@@ -77,7 +103,7 @@ function App() {
           }
         />
 
-        {/* Unknown URL */}
+        {/* UNKNOWN */}
 
         <Route
           path="*"
