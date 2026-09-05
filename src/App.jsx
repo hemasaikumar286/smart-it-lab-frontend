@@ -1,37 +1,27 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import Issues from "./pages/Issues";
-import CreateIssue from "./pages/CreateIssue";
-import Notifications from "./pages/Notifications";
-import Profile from "./pages/Profile";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Issues from "./pages/Issues.jsx";
+import CreateIssue from "./pages/CreateIssue.jsx";
+import Notifications from "./pages/Notifications.jsx";
+import Profile from "./pages/Profile.jsx";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* =========================
-            PUBLIC ROUTES
-        ========================= */}
+        {/* Public Routes */}
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+        <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/register"
-          element={<Register />}
-        />
+        <Route path="/register" element={<Register />} />
 
-        {/* =========================
-            PROTECTED ROUTES
-        ========================= */}
+        {/* Protected Routes */}
 
         <Route
           path="/"
@@ -87,9 +77,7 @@ function App() {
           }
         />
 
-        {/* =========================
-            UNKNOWN URL
-        ========================= */}
+        {/* Unknown URL */}
 
         <Route
           path="*"
