@@ -1,82 +1,72 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Monitor, Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { api } from "../services/api";
+import { login } from "../services/api";
 
 function Login() {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
+  function handleChange(e) {
+    const { name, value } = e.target;
 
-  const handleSubmit = async (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
 
     setError("");
-    setLoading(true);
+
+    if (!formData.email || !formData.password) {
+      setError("Please enter email and password.");
+      return;
+    }
 
     try {
-      const response = await api.login(form);
+      setLoading(true);
 
-      const token =
-        response.token ||
-        response.accessToken ||
-        response.data?.token;
+      const data = await login(
+        formData.email,
+        formData.password
+      );
 
-      const user =
-        response.user ||
-        response.data?.user;
+      console.log("Login successful:", data);
 
-      if (!token) {
-        throw new Error("Login successful but token was not received.");
-      }
-
-      localStorage.setItem("token", token);
-
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-      }
-
-      navigate("/dashboard");
+      navigate("/dashboard", {
+        replace: true,
+      });
 
     } catch (err) {
-      setError(err.message || "Invalid email or password.");
+      console.error("Login error:", err);
+
+      setError(
+        err.message || "Login failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
-    <div className="auth-page">
+    <div className="login-page">
 
-      <div className="auth-card">
+      <div className="login-card">
 
-        <div className="auth-logo">
-          <div className="auth-logo-icon">
-            <Monitor size={28} />
-          </div>
+        <h1>IT Lab Management System</h1>
 
-          <h1>LabCare</h1>
-          <p>IT Lab Management System</p>
-        </div>
-
-        <div className="auth-heading">
-          <h2>Welcome back</h2>
-          <p>Sign in to manage your laboratory issues.</p>
-        </div>
+        <p className="login-subtitle">
+          Sign in to your account
+        </p>
 
         {error && (
           <div className="error-message">
@@ -87,69 +77,57 @@ function Login() {
         <form onSubmit={handleSubmit}>
 
           <div className="form-group">
-            <label>Email Address</label>
+            <label htmlFor="email">
+              Email
+            </label>
 
-            <div className="input-wrapper">
-              <Mail size={18} />
-
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+              autoComplete="email"
+              required
+            />
           </div>
 
           <div className="form-group">
-            <label>Password</label>
+            <label htmlFor="password">
+              Password
+            </label>
 
-            <div className="input-wrapper">
-              <Lock size={18} />
-
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="Enter your password"
-                value={form.password}
-                onChange={handleChange}
-                required
-              />
-
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() =>
-                  setShowPassword(!showPassword)
-                }
-              >
-                {showPassword ? (
-                  <EyeOff size={18} />
-                ) : (
-                  <Eye size={18} />
-                )}
-              </button>
-            </div>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              autoComplete="current-password"
+              required
+            />
           </div>
 
           <button
-            className="primary-button auth-button"
             type="submit"
             disabled={loading}
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? "Signing in..." : "Login"}
           </button>
 
         </form>
 
-        <p className="auth-footer">
+        <p className="register-link">
           Don't have an account?{" "}
-          <Link to="/register">Create account</Link>
+          <Link to="/register">
+            Register
+          </Link>
         </p>
 
       </div>
+
     </div>
   );
 }
